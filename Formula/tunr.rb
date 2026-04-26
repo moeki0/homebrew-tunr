@@ -34,6 +34,12 @@ class Tunr < Formula
     bin.install "tunr-ax-text"
     bin.install "tunr-embed"
     bin.install "tunr-audio-capture"
+
+    # Ad-hoc sign so macOS doesn't SIGKILL unsigned compiled binaries on Apple Silicon
+    %w[tunr tunr-ax-text tunr-embed tunr-audio-capture].each do |name|
+      system "codesign", "--remove-signature", bin/name rescue nil
+      system "codesign", "-s", "-", "--force", bin/name
+    end
   end
 
   def caveats
